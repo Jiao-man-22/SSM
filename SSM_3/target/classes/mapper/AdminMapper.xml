@@ -1,0 +1,71 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--映射java的接口-->
+<mapper namespace="mapper.IAdminMapper">
+    <!--编写动态sql-->
+    <sql id="AdminFindCirteria" >
+        <where>
+            <if test="id !=null"> and id=#{id}</if>
+            <if test="account !=null"> and account=#{account}</if>
+            <if test="name !=null"> and name=#{name}</if>
+            <if test="password !=null"> and password=#{passworo}</if>
+            <if test="phone !=null"> and phone=#{phone}</if>
+            <if test="remark !=null"> and  remark=#{remark}</if>
+        </where>
+    </sql>
+    <!--配置结果集和实体类的对应关系-->
+    <resultMap id="AdminMap" type="entity.Admin">
+        <id property="id" column="id"></id>
+        <result column="account" property="account"></result>
+        <result column="name" property="name"></result>
+        <result column="password" property="password"></result>
+        <result column="phone" property="phone"></result>
+        <result column="remark" property="remark"></result>
+    </resultMap>
+    <!--配置查询所有-->
+    <!--将java代码中的sql语句抽到配置文件中来，利用标签进行执行 。是维护变得方便 减少java代码量-->
+    <!--插入admin用户-->
+    <insert id="create" parameterType="entity.Admin" useGeneratedKeys="true" keyProperty="id" >
+        insert into tb_admin (account,password,name,phone,remark) values (#{account},#{password},#{name},#{phone},#{remark})
+    </insert>
+    <!--按要求删除-->
+    <delete id="delete" >
+        delete from tb_Admin
+        <include refid="AdminFindCirteria"></include>
+    </delete>
+    <!--索引总个数-->
+    <select id="count" resultType="int">
+        select count(1) from tb_Admin
+        <include refid="AdminFindCirteria"></include>
+    </select>
+    <!--查询总信息-->
+    <select id="queryAll" resultMap="AdminMap">
+        select * from tb_Admin
+        <include refid="AdminFindCirteria"></include>
+    </select>
+    <!--只查询一条数据-->
+    <select id="detail" resultMap="AdminMap">
+        select * from tb_Admin
+        <include refid="AdminFindCirteria"></include>
+        limit 1 
+    </select>
+    <!--更新用户-->
+    <update id="update">
+        update tb_Admin
+        <include refid="AdminUpdateCirteria"></include>
+        <include refid="AdminFindCirteria"></include>
+    </update>
+    <sql id="AdminUpdateCirteria">
+        <set>
+            <if test="updateAccount !=null"> account=#{updateAccount},</if>
+            <if test="updateName !=null">  name =#{updateName},</if>
+            <if test="updatePassword !=null"> password=#{updatePassword},</if>
+            <if test="updatePhone !=null"> phone=#{updatePhone},</if>
+            <if test="updateRemark !=null"> remark=#{updateRemark},</if>
+        </set>
+        
+    </sql>
+
+
+</mapper>
